@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="it">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -157,9 +157,9 @@
       <h1>Galaxy Siege</h1>
       <div class="stats">
         <div class="stat">Score: <span id="scoreValue">0</span></div>
-        <div class="stat">Vita: <span id="livesValue">5</span></div>
-        <div class="stat">Ondata: <span id="waveValue">1</span></div>
-        <div class="stat">Arma: <span id="weaponValue">Blaster</span></div>
+        <div class="stat">Lives: <span id="livesValue">5</span></div>
+        <div class="stat">Wave: <span id="waveValue">1</span></div>
+        <div class="stat">Weapon: <span id="weaponValue">Blaster</span></div>
       </div>
     </div>
 
@@ -167,12 +167,12 @@
       <div class="box">
         <h2>Galaxy Siege</h2>
         <div class="instructions">
-          <p>Muovi l'astronave con WASD oppure con le frecce direzionali.</p>
-          <p>Spara con il mouse o con la barra spaziatrice. Raccogli i power-up e sopravvivi alle ondate.</p>
+          <p>Move the ship with WASD or the arrow keys.</p>
+          <p>Shoot with the mouse or the space bar. Collect power-ups and survive the waves.</p>
         </div>
         <div class="controls">
-          <button class="btn" id="startBtn">Avvia partita</button>
-          <button class="btn alt" id="pauseBtn">Pausa</button>
+          <button class="btn" id="startBtn">Start Game</button>
+          <button class="btn alt" id="pauseBtn">Pause</button>
         </div>
       </div>
     </div>
@@ -181,11 +181,11 @@
       <div class="box">
         <h2>Game Over</h2>
         <div class="instructions">
-          <p>Hai totalizzato <strong id="finalScore">0</strong> punti.</p>
-          <p>Premi il pulsante per riprovare.</p>
+          <p>You scored <strong id="finalScore">0</strong> points.</p>
+          <p>Press the button to try again.</p>
         </div>
         <div class="controls">
-          <button class="btn" id="restartBtn">Riprova</button>
+          <button class="btn" id="restartBtn">Retry</button>
         </div>
       </div>
     </div>
@@ -268,7 +268,7 @@
       stars = createStars();
       weaponLevel = 1;
       fireRate = 0.22;
-      messageText = 'Ondata 1';
+      messageText = 'Wave 1';
       messageTimer = 2.2;
       resetPlayer();
       updateHud();
@@ -428,7 +428,7 @@
         if (bossAlive && !enemies.some((item) => item.pattern === 'boss')) {
           bossAlive = false;
           wave += 1;
-          messageText = 'Ondata ' + wave;
+          messageText = 'Wave ' + wave;
           messageTimer = 2.1;
           spawnWave();
         }
@@ -449,7 +449,7 @@
       if (wave > 0 && wave % 4 === 0 && !bossAlive) {
         bossAlive = true;
         spawnEnemy('boss');
-        messageText = 'Boss in arrivo!';
+        messageText = 'Boss incoming!';
         messageTimer = 2.3;
       }
     }
@@ -581,11 +581,11 @@
         if (dist < item.radius + player.radius + 2) {
           if (item.kind === 'heal') {
             player.lives = Math.min(8, player.lives + 1);
-            messageText = '+1 vita';
+            messageText = '+1 life';
           } else {
             weaponLevel = Math.min(5, weaponLevel + 1);
             fireRate = Math.max(0.08, 0.22 - (weaponLevel - 1) * 0.03);
-            messageText = 'Arma potenziata';
+            messageText = 'Weapon upgraded';
           }
           messageTimer = 1.8;
           createBurst(item.x, item.y, '#ffd166', 15);
@@ -622,27 +622,27 @@
 
       if (wave === 1 && score >= 250) {
         wave = 2;
-        messageText = 'Ondata 2';
+        messageText = 'Wave 2';
         messageTimer = 2.0;
         spawnWave();
       } else if (wave === 2 && score >= 700) {
         wave = 3;
-        messageText = 'Ondata 3';
+        messageText = 'Wave 3';
         messageTimer = 2.0;
         spawnWave();
       } else if (wave === 3 && score >= 1400) {
         wave = 4;
-        messageText = 'Ondata 4';
+        messageText = 'Wave 4';
         messageTimer = 2.0;
         spawnWave();
       } else if (wave === 4 && score >= 2300) {
         wave = 5;
-        messageText = 'Ondata 5';
+        messageText = 'Wave 5';
         messageTimer = 2.0;
         spawnWave();
       } else if (wave === 5 && score >= 3400) {
         wave = 6;
-        messageText = 'Ondata 6';
+        messageText = 'Wave 6';
         messageTimer = 2.0;
         spawnWave();
       }
@@ -793,7 +793,7 @@
         ctx.fillStyle = 'rgba(255,255,255,0.08)';
         ctx.font = '700 18px Arial';
         ctx.textAlign = 'center';
-        ctx.fillText('Premi Avvia partita per iniziare', canvas.width / 2, canvas.height * 0.17);
+        ctx.fillText('Press Start Game to begin', canvas.width / 2, canvas.height * 0.17);
       }
 
       if (screenShake > 0) {
