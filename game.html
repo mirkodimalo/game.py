@@ -998,178 +998,112 @@
       if (!messageTimer || messageTimer <= 0) return;
       ctx.save();
       ctx.textAlign = 'center';
-      ctx.font = '700 26px Arial';
-      ctx.fillStyle = 'rgba(142,240,255,0.95)';
+      ctx.fillStyle = 'rgba(142,240,255,0.9)';
+      ctx.font = 'bold 28px Arial';
       ctx.fillText(messageText, canvas.width / 2, canvas.height * 0.18);
       ctx.restore();
     }
 
-    function draw() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      drawBackground();
-
+    function drawGame() {
       ctx.save();
       if (screenShake > 0) {
         ctx.translate((Math.random() - 0.5) * screenShake * 2, (Math.random() - 0.5) * screenShake * 2);
       }
-
-      if (state === 'playing' || state === 'gameover') {
-        drawPickups();
-        drawBullets();
-        drawEnemies();
-        drawParticles();
-        drawPlayer();
-      }
-      ctx.restore();
-
+      drawBackground();
+      drawPickups();
+      drawParticles();
+      drawBullets();
+      drawEnemies();
+      drawPlayer();
       drawMessage();
-
-      if (state === 'menu') {
-        ctx.fillStyle = 'rgba(255,255,255,0.08)';
-        ctx.font = '700 18px Arial';
-        ctx.textAlign = 'center';
-        ctx.fillText('Press Start Game to begin', canvas.width / 2, canvas.height * 0.17);
-      }
+      ctx.restore();
     }
 
     function loop(timestamp) {
-      const dt = Math.min(0.032, (timestamp - lastTime) / 1000 || 0.016);
+      const dt = Math.min(0.033, (timestamp - lastTime) / 1000 || 0.016);
       lastTime = timestamp;
       update(dt);
-      draw();
+      drawGame();
       requestAnimationFrame(loop);
     }
-
-    function handleJoyMove(clientX, clientY) {
-      const rect = joyBase.getBoundingClientRect();
-      const centerX = rect.left + rect.width / 2;
-      const centerY = rect.top + rect.height / 2;
-      const dx = clientX - centerX;
-      const dy = clientY - centerY;
-      const len = Math.hypot(dx, dy);
-
-      const maxDistance = joyBase.clientWidth * 0.35;
-      const clampedLen = Math.min(len, maxDistance);
-
-      const angle = Math.atan2(dy, dx);
-      const x = Math.cos(angle) * clampedLen;
-      const y = Math.sin(angle) * clampedLen;
-
-      joystick.active = true;
-      joystick.x = x / maxDistance;
-      joystick.y = y / maxDistance;
-
-      joyKnob.style.transform = `translate(${x}px, ${y}px)`;
-    }
-
-    function releaseJoy() {
-      resetJoystick();
-      joyKnob.style.transform = 'translate(0px, 0px)';
-    }
-
-    pcModeBtn.addEventListener('click', () => startGame('pc'));
-    phoneModeBtn.addEventListener('click', () => startGame('phone'));
-
-    restartBtn.addEventListener('click', () => startGame(controlMode));
 
     window.addEventListener('keydown', (event) => {
       const key = event.key.length === 1 ? event.key.toLowerCase() : event.key;
       keys[key] = true;
-
-      if (key === ' ' || event.code === 'Space') {
+      if (key === ' ') {
         keys[' '] = true;
-        event.preventDefault();
       }
-
-      if (event.key === 'Escape') {
-        if (state === 'playing') {
-          state = 'menu';
-          menuOverlay.classList.remove('hidden');
-          updatePhoneControlsVisibility();
-        } else if (state === 'menu') {
-          state = 'playing';
-          menuOverlay.classList.add('hidden');
-          updatePhoneControlsVisibility();
-        }
+      if (key === 'Spacebar') {
+        keys.Space = true;
       }
     });
 
     window.addEventListener('keyup', (event) => {
       const key = event.key.length === 1 ? event.key.toLowerCase() : event.key;
       keys[key] = false;
-
-      if (key === ' ' || event.code === 'Space') {
+      if (key === ' ') {
         keys[' '] = false;
       }
-    });
-
-    window.addEventListener('pointermove', (event) => {
-      if (controlMode === 'phone' && joystick.active) {
-        handleJoyMove(event.clientX, event.clientY);
-      } else {
-        pointer.x = event.clientX;
-        pointer.y = event.clientY;
-        pointer.active = true;
+      if (key === 'Spacebar') {
+        keys.Space = false;
       }
     });
 
-    window.addEventListener('pointerdown', (event) => {
-      if (controlMode === 'phone') {
-        if (event.target === joyBase || joyBase.contains(event.target)) {
-          handleJoyMove(event.clientX, event.clientY);
-        } else {
-          setPointerFromScreen(event.clientX, event.clientY);
-        }
-      } else {
+    canvas.addEventListener('pointerdown', (event) => {
+      setPointerFromScreen(event.clientX, event.clientY);
+    });
+
+    canvas.addEventListener('pointermove', (event) => {
+      if (controlMode === 'pc') {
         setPointerFromScreen(event.clientX, event.clientY);
       }
-
-      if (state === 'menu') {
-        startGame(controlMode);
-      }
     });
 
-    window.addEventListener('pointerup', () => {
+    canvas.addEventListener('pointerup', () => {
       pointer.active = false;
-      if (controlMode === 'phone') {
-        releaseJoy();
-      }
     });
+
+    canvas.addEventListener('pointerleave', () => {
+      pointer.active = false;
+    });
+
+    function updateJoystickFromPointer(clientX, clientY) {
+      const rect = joyBase.getBoundingClientRect();
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
+      const dx = clientX - cx;
+      const dy = clientY - cy;
+      const distance = Math.min(Math.hypot(dx, dy), joystick.maxDistance);
+      const angle = Math.atan2(dy, dx);
+
+      joystick.x = Math.cos(angle) * (distance / joystick.maxDistance);
+      joystick.y = Math.sin(angle) * (distance / joystick.maxDistance);
+
+      const knobX = Math.cos(angle) * distance;
+      const knobY = Math.sin(angle) * distance;
+      joyKnob.style.transform = `translate(${knobX}px, ${knobY}px)`;
+    }
 
     joyBase.addEventListener('pointerdown', (event) => {
-      if (controlMode !== 'phone') return;
-      event.preventDefault();
-      handleJoyMove(event.clientX, event.clientY);
+      joystick.active = true;
+      updateJoystickFromPointer(event.clientX, event.clientY);
     });
 
     joyBase.addEventListener('pointermove', (event) => {
-      if (controlMode !== 'phone' || !joystick.active) return;
-      event.preventDefault();
-      handleJoyMove(event.clientX, event.clientY);
+      if (!joystick.active) return;
+      updateJoystickFromPointer(event.clientX, event.clientY);
     });
 
-    joyBase.addEventListener('pointerup', () => {
-      if (controlMode === 'phone') releaseJoy();
-    });
-
-    joyBase.addEventListener('pointerleave', () => {
-      if (controlMode === 'phone') releaseJoy();
-    });
-
-    joyBase.addEventListener('pointercancel', () => {
-      if (controlMode === 'phone') releaseJoy();
-    });
+    joyBase.addEventListener('pointerup', resetJoystick);
+    joyBase.addEventListener('pointerleave', resetJoystick);
+    joyBase.addEventListener('pointercancel', resetJoystick);
 
     fireButton.addEventListener('pointerdown', (event) => {
       event.preventDefault();
       fireHeld = true;
-      if (state === 'menu') {
-        startGame(controlMode);
-      }
     });
 
-    fireButton.addEventListener('pointerup', (event) => {
-      event.preventDefault();
+    fireButton.addEventListener('pointerup', () => {
       fireHeld = false;
     });
 
@@ -1181,9 +1115,13 @@
       fireHeld = false;
     });
 
+    pcModeBtn.addEventListener('click', () => startGame('pc'));
+    phoneModeBtn.addEventListener('click', () => startGame('phone'));
+    restartBtn.addEventListener('click', () => startGame(controlMode));
+
+    window.addEventListener('resize', resize);
     resize();
     updatePhoneControlsVisibility();
-    resetGame();
     requestAnimationFrame(loop);
   </script>
 </body>
