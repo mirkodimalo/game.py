@@ -338,8 +338,9 @@
     const weaponNames = ['Blaster', 'Plasma', 'Nova', 'Vortex', 'Apex'];
 
     function setMobileControlsVisible() {
-      const touchDevice = window.matchMedia('(pointer: coarse)').matches || window.innerWidth <= 900;
-      mobileControls.classList.toggle('hidden', !touchDevice);
+      const smallScreen = window.innerWidth <= 900;
+      const coarsePointer = window.matchMedia('(pointer: coarse)').matches;
+      mobileControls.classList.toggle('hidden', !(smallScreen || coarsePointer));
     }
 
     function setMoveKey(direction, active) {
@@ -426,15 +427,18 @@
     function resize() {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
+
       if (!player) {
         resetPlayer();
       } else {
         player.x = Math.min(Math.max(player.x, 30), canvas.width - 30);
         player.y = Math.min(Math.max(player.y, 30), canvas.height - 30);
       }
+
       if (!stars.length) {
         stars = createStars();
       }
+
       setMobileControlsVisible();
     }
 
@@ -1054,6 +1058,7 @@
     window.addEventListener('keydown', (event) => {
       const key = event.key.length === 1 ? event.key.toLowerCase() : event.key;
       keys[key] = true;
+
       if (key === ' ' || event.code === 'Space') {
         keys[' '] = true;
         event.preventDefault();
@@ -1073,6 +1078,7 @@
     window.addEventListener('keyup', (event) => {
       const key = event.key.length === 1 ? event.key.toLowerCase() : event.key;
       keys[key] = false;
+
       if (key === ' ' || event.code === 'Space') {
         keys[' '] = false;
       }
@@ -1088,6 +1094,7 @@
       pointer.x = event.clientX;
       pointer.y = event.clientY;
       pointer.active = true;
+
       if (state === 'menu') {
         startGame();
       }
@@ -1104,6 +1111,7 @@
       pointer.y = canvas.height * 0.2;
       pointer.active = true;
       keys[' '] = true;
+
       if (state === 'menu') {
         startGame();
       }
@@ -1135,6 +1143,7 @@
 
     startBtn.addEventListener('click', startGame);
     restartBtn.addEventListener('click', startGame);
+
     pauseBtn.addEventListener('click', () => {
       if (state === 'playing') {
         state = 'menu';
@@ -1146,6 +1155,10 @@
     });
 
     window.addEventListener('resize', resize);
+    window.addEventListener('load', () => {
+      setMobileControlsVisible();
+    });
+
     resize();
     resetGame();
     requestAnimationFrame(loop);
