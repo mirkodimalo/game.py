@@ -9,14 +9,12 @@
       --bg1: #030b16;
       --bg2: #0c1830;
       --panel: rgba(10, 18, 30, 0.76);
-      --panel-strong: rgba(13, 22, 33, 0.94);
       --cyan: #8ef0ff;
       --cyan-strong: #4dd7ff;
       --danger: #ff4d6d;
       --gold: #ffd166;
       --good: #7ef29a;
       --text: #edfaff;
-      --muted: rgba(237, 250, 255, 0.78);
     }
 
     * { box-sizing: border-box; }
@@ -81,12 +79,11 @@
     }
 
     .stat {
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
       border-radius: 8px;
       padding: 5px 9px;
       min-width: 92px;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
     }
 
     .center-overlay {
@@ -147,84 +144,79 @@
       cursor: pointer;
       background: linear-gradient(180deg, #9ef3ff, #3dc2ff);
       color: #04141d;
-      box-shadow: 0 10px 24px rgba(61, 194, 255, 0.45), inset 0 1px 0 rgba(255,255,255,0.45);
+      box-shadow: 0 10px 24px rgba(61,194,255,0.45), inset 0 1px 0 rgba(255,255,255,0.45);
       transition: transform 0.14s ease, box-shadow 0.14s ease;
     }
 
     .btn:hover {
       transform: translateY(-1px);
-      box-shadow: 0 12px 28px rgba(61, 194, 255, 0.58), inset 0 1px 0 rgba(255,255,255,0.5);
+      box-shadow: 0 12px 28px rgba(61,194,255,0.58), inset 0 1px 0 rgba(255,255,255,0.5);
     }
 
     .btn.alt {
       background: linear-gradient(180deg, #ffd166, #fa9f42);
-      box-shadow: 0 10px 24px rgba(250, 159, 66, 0.45), inset 0 1px 0 rgba(255,255,255,0.4);
+      box-shadow: 0 10px 24px rgba(250,159,66,0.45), inset 0 1px 0 rgba(255,255,255,0.4);
     }
 
-    .mobile-controls {
+    .phone-controls {
       position: fixed;
       left: 0;
       right: 0;
       bottom: 0;
       display: flex;
-      justify-content: space-between;
       align-items: flex-end;
+      justify-content: space-between;
       padding: 18px 18px max(18px, env(safe-area-inset-bottom));
       pointer-events: none;
-      z-index: 20;
+      z-index: 30;
     }
 
-    .mobile-pad {
-      display: grid;
-      grid-template-columns: repeat(3, 56px);
-      grid-template-rows: repeat(3, 56px);
-      gap: 8px;
+    .joy-base {
+      position: relative;
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      background: rgba(10, 17, 26, 0.5);
+      border: 2px solid rgba(142, 240, 255, 0.22);
+      box-shadow: inset 0 0 24px rgba(142,240,255,0.08), 0 12px 30px rgba(0,0,0,0.28);
       pointer-events: auto;
-      user-select: none;
-      touch-action: none;
-    }
-
-    .mobile-btn {
-      width: 56px;
-      height: 56px;
-      border: 1px solid rgba(142, 240, 255, 0.35);
-      border-radius: 16px;
-      background: rgba(7, 17, 28, 0.68);
-      color: var(--text);
-      font-size: 20px;
-      font-weight: 700;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), 0 12px 26px rgba(0,0,0,0.22);
       touch-action: none;
       user-select: none;
-      -webkit-user-select: none;
-      -webkit-touch-callout: none;
     }
 
-    .mobile-btn:active,
-    .mobile-btn.active {
-      background: rgba(61, 194, 255, 0.22);
-      transform: scale(0.98);
+    .joy-knob {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 52px;
+      height: 52px;
+      margin-left: -26px;
+      margin-top: -26px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #dffcff, #7dd3fc 60%, #3ba8ff 100%);
+      box-shadow: 0 12px 20px rgba(61, 194, 255, 0.45), inset 0 1px 0 rgba(255,255,255,0.8);
+      transform: translate(0, 0);
+      transition: transform 0.04s linear;
     }
-
-    .mobile-btn[data-dir="up"] { grid-column: 2; grid-row: 1; }
-    .mobile-btn[data-dir="left"] { grid-column: 1; grid-row: 2; }
-    .mobile-btn[data-dir="down"] { grid-column: 2; grid-row: 3; }
-    .mobile-btn[data-dir="right"] { grid-column: 3; grid-row: 2; }
 
     .fire-button {
       width: 96px;
       height: 96px;
       border-radius: 50%;
-      background: linear-gradient(180deg, #ffd166, #ff8e4d);
-      color: #191200;
-      border: 1px solid rgba(255,255,255,0.25);
-      box-shadow: 0 18px 34px rgba(255, 160, 70, 0.4), inset 0 1px 0 rgba(255,255,255,0.5);
+      border: 2px solid rgba(255,255,255,0.2);
+      background: linear-gradient(180deg, #ffd166, #ff8c42);
+      color: #221400;
       font-size: 18px;
+      font-weight: 800;
+      box-shadow: 0 18px 34px rgba(255, 160, 70, 0.42), inset 0 1px 0 rgba(255,255,255,0.5);
       pointer-events: auto;
       touch-action: none;
       user-select: none;
-      -webkit-user-select: none;
-      -webkit-touch-callout: none;
+      margin-right: 10px;
+    }
+
+    .fire-button:active {
+      transform: scale(0.98);
     }
 
     .hidden { display: none !important; }
@@ -254,13 +246,13 @@
       <div class="box">
         <h2>Galaxy Siege</h2>
         <div class="instructions">
-          <p>Move with WASD or the arrow keys.</p>
-          <p>Aim with the mouse and fire with the mouse, left click, or space.</p>
-          <p>Collect weapon and life drops, survive each wave, and defeat the boss.</p>
+          <p>Choose your control style.</p>
+          <p>PC: mouse + keyboard</p>
+          <p>Phone: dynamic thumbstick + fire button</p>
         </div>
         <div class="controls">
-          <button class="btn" id="startBtn">Start Game</button>
-          <button class="btn alt" id="pauseBtn">Pause</button>
+          <button class="btn" id="pcModeBtn">PC</button>
+          <button class="btn alt" id="phoneModeBtn">Phone</button>
         </div>
       </div>
     </div>
@@ -279,12 +271,9 @@
     </div>
   </div>
 
-  <div id="mobileControls" class="mobile-controls hidden" aria-label="touch controls">
-    <div class="mobile-pad" aria-label="move controls">
-      <button class="mobile-btn" data-dir="up" aria-label="Move up">▲</button>
-      <button class="mobile-btn" data-dir="left" aria-label="Move left">◀</button>
-      <button class="mobile-btn" data-dir="down" aria-label="Move down">▼</button>
-      <button class="mobile-btn" data-dir="right" aria-label="Move right">▶</button>
+  <div id="phoneControls" class="phone-controls hidden">
+    <div id="joyBase" class="joy-base" aria-label="move joystick">
+      <div id="joyKnob" class="joy-knob"></div>
     </div>
     <button id="fireButton" class="fire-button" aria-label="Fire weapon">FIRE</button>
   </div>
@@ -300,23 +289,18 @@
     const menuOverlay = document.getElementById('menuOverlay');
     const gameOverOverlay = document.getElementById('gameOverOverlay');
     const finalScore = document.getElementById('finalScore');
-    const startBtn = document.getElementById('startBtn');
+    const pcModeBtn = document.getElementById('pcModeBtn');
+    const phoneModeBtn = document.getElementById('phoneModeBtn');
     const restartBtn = document.getElementById('restartBtn');
-    const pauseBtn = document.getElementById('pauseBtn');
-    const mobileControls = document.getElementById('mobileControls');
-    const mobileButtons = [...document.querySelectorAll('.mobile-btn')];
+    const phoneControls = document.getElementById('phoneControls');
+    const joyBase = document.getElementById('joyBase');
+    const joyKnob = document.getElementById('joyKnob');
     const fireButton = document.getElementById('fireButton');
 
     const keys = {};
     const pointer = { x: 0, y: 0, active: false };
-    const touchButtons = {
-      up: false,
-      down: false,
-      left: false,
-      right: false
-    };
-    let fireHeld = false;
 
+    let controlMode = 'pc';
     let state = 'menu';
     let lastTime = 0;
     let player = null;
@@ -334,46 +318,59 @@
     let screenShake = 0;
     let weaponLevel = 1;
     let fireRate = 0.22;
+    let fireHeld = false;
 
     const weaponNames = ['Blaster', 'Plasma', 'Nova', 'Vortex', 'Apex'];
 
-    function setMobileControlsVisible() {
-      const smallScreen = window.innerWidth <= 900;
-      const coarsePointer = window.matchMedia('(pointer: coarse)').matches;
-      mobileControls.classList.toggle('hidden', !(smallScreen || coarsePointer));
+    const joystick = {
+      active: false,
+      x: 0,
+      y: 0,
+      maxDistance: 34
+    };
+
+    function resetJoystick() {
+      joystick.active = false;
+      joystick.x = 0;
+      joystick.y = 0;
+      joyKnob.style.transform = 'translate(0px, 0px)';
     }
 
-    function setMoveKey(direction, active) {
-      touchButtons[direction] = active;
-      const button = document.querySelector(`.mobile-btn[data-dir="${direction}"]`);
-      if (button) {
-        button.classList.toggle('active', active);
+    function updatePhoneControlsVisibility() {
+      if (controlMode === 'phone') {
+        phoneControls.classList.remove('hidden');
+      } else {
+        phoneControls.classList.add('hidden');
+      }
+    }
+
+    function setPointerFromScreen(x, y) {
+      pointer.x = x;
+      pointer.y = y;
+      pointer.active = true;
+    }
+
+    function getPhoneMove() {
+      return {
+        x: joystick.x,
+        y: joystick.y
+      };
+    }
+
+    function getAimAngle() {
+      if (controlMode === 'pc') {
+        if (pointer.active) {
+          return Math.atan2(pointer.y - player.y, pointer.x - player.x) || -Math.PI / 2;
+        }
+        return -Math.PI / 2;
       }
 
-      const map = {
-        up: 'w',
-        down: 's',
-        left: 'a',
-        right: 'd'
-      };
-      keys[map[direction]] = active;
-    }
+      const move = getPhoneMove();
+      if (move.x !== 0 || move.y !== 0) {
+        return Math.atan2(move.y, move.x);
+      }
 
-    function bindMobileButton(button, direction) {
-      const press = (event) => {
-        event.preventDefault();
-        setMoveKey(direction, true);
-      };
-
-      const release = (event) => {
-        event.preventDefault();
-        setMoveKey(direction, false);
-      };
-
-      button.addEventListener('pointerdown', press);
-      button.addEventListener('pointerup', release);
-      button.addEventListener('pointerleave', release);
-      button.addEventListener('pointercancel', release);
+      return -Math.PI / 2;
     }
 
     function createStars() {
@@ -401,8 +398,7 @@
         fireCooldown: 0,
         invuln: 0,
         tilt: 0,
-        glow: 0,
-        thrust: 0
+        glow: 0
       };
     }
 
@@ -438,8 +434,6 @@
       if (!stars.length) {
         stars = createStars();
       }
-
-      setMobileControlsVisible();
     }
 
     function updateHud() {
@@ -519,17 +513,9 @@
       }
 
       enemies.push({
-        x,
-        y,
-        radius,
-        speed,
-        health,
-        maxHealth: health,
-        color,
-        pattern,
+        x, y, radius, speed, health, maxHealth: health, color, pattern,
         phase: Math.random() * Math.PI * 2,
-        fireCooldown: 1.2 + Math.random() * 1.5,
-        drift: Math.random() * Math.PI * 2
+        fireCooldown: 1.2 + Math.random() * 1.5
       });
     }
 
@@ -546,7 +532,7 @@
     function shootBullet() {
       if (!player || state !== 'playing') return;
 
-      const angle = Math.atan2(pointer.y - player.y, pointer.x - player.x) || -Math.PI / 2;
+      const angle = getAimAngle();
       const shotCount = Math.min(4, weaponLevel);
       const spread = weaponLevel > 3 ? 0.18 : 0.11;
       const bulletSpeed = weaponLevel >= 4 ? 720 : weaponLevel >= 3 ? 690 : 660;
@@ -572,17 +558,21 @@
       screenShake = Math.max(screenShake, 4);
     }
 
-    function startGame() {
+    function startGame(mode) {
+      controlMode = mode;
       resetGame();
       state = 'playing';
       menuOverlay.classList.add('hidden');
       gameOverOverlay.classList.add('hidden');
+      updatePhoneControlsVisibility();
+      resetJoystick();
     }
 
     function gameOver() {
       state = 'gameover';
       finalScore.textContent = Math.floor(score);
       gameOverOverlay.classList.remove('hidden');
+      resetJoystick();
     }
 
     function hitEnemy(enemy, damage) {
@@ -590,9 +580,7 @@
       if (enemy.health <= 0) {
         score += enemy.radius > 45 ? 200 : enemy.radius > 20 ? 90 : 45;
         createBurst(enemy.x, enemy.y, enemy.color, enemy.radius > 45 ? 34 : enemy.radius > 20 ? 22 : 14, 30);
-        if (Math.random() < 0.18) {
-          spawnPickup(enemy.x, enemy.y);
-        }
+        if (Math.random() < 0.18) spawnPickup(enemy.x, enemy.y);
         enemies = enemies.filter((item) => item !== enemy);
 
         if (bossAlive && !enemies.some((item) => item.pattern === 'boss')) {
@@ -638,16 +626,18 @@
     function updatePlayer(dt) {
       if (!player) return;
 
-      const moveX =
-        (keys.ArrowRight || keys.d || touchButtons.right ? 1 : 0) -
-        (keys.ArrowLeft || keys.a || touchButtons.left ? 1 : 0);
+      let moveX = 0;
+      let moveY = 0;
 
-      const moveY =
-        (keys.ArrowDown || keys.s || touchButtons.down ? 1 : 0) -
-        (keys.ArrowUp || keys.w || touchButtons.up ? 1 : 0);
+      if (controlMode === 'phone') {
+        moveX = joystick.x;
+        moveY = joystick.y;
+      } else {
+        moveX = (keys.ArrowRight || keys.d ? 1 : 0) - (keys.ArrowLeft || keys.a ? 1 : 0);
+        moveY = (keys.ArrowDown || keys.s ? 1 : 0) - (keys.ArrowUp || keys.w ? 1 : 0);
+      }
 
       const len = Math.hypot(moveX, moveY) || 1;
-
       player.x += (moveX / len) * player.speed * dt;
       player.y += (moveY / len) * player.speed * dt;
 
@@ -659,11 +649,11 @@
       player.glow = Math.max(0, player.glow - dt * 2.2);
       player.tilt *= 0.88;
 
-      if (keys[' '] || keys.Space || pointer.active || fireHeld) {
-        if (player.fireCooldown <= 0) {
-          shootBullet();
-          player.fireCooldown = fireRate;
-        }
+      const firing = keys[' '] || keys.Space || pointer.active || fireHeld;
+
+      if (firing && player.fireCooldown <= 0) {
+        shootBullet();
+        player.fireCooldown = fireRate;
       }
     }
 
@@ -713,7 +703,6 @@
       for (let i = enemies.length - 1; i >= 0; i -= 1) {
         const enemy = enemies[i];
         enemy.phase += dt * (enemy.pattern === 'zigzag' ? 7 : 3);
-        enemy.drift += dt * (enemy.pattern === 'seeker' ? 3.4 : 1.8);
 
         const dx = player.x - enemy.x;
         const dy = player.y - enemy.y;
@@ -810,8 +799,8 @@
       for (let i = pickups.length - 1; i >= 0; i -= 1) {
         const item = pickups[i];
         item.pulse += dt * 6;
-
         const dist = Math.hypot(player.x - item.x, player.y - item.y);
+
         if (dist < item.radius + player.radius + 2) {
           if (item.kind === 'heal') {
             player.lives = Math.min(8, player.lives + 1);
@@ -835,9 +824,7 @@
         p.x += p.vx * dt;
         p.y += p.vy * dt;
         p.life -= dt;
-        if (p.life <= 0) {
-          particles.splice(i, 1);
-        }
+        if (p.life <= 0) particles.splice(i, 1);
       }
     }
 
@@ -891,9 +878,7 @@
       }
 
       screenShake = Math.max(0, screenShake - dt * 16);
-      if (messageTimer > 0) {
-        messageTimer -= dt;
-      }
+      if (messageTimer > 0) messageTimer -= dt;
 
       updateStars(dt);
       updatePlayer(dt);
@@ -910,18 +895,18 @@
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       for (const star of stars) {
-        ctx.fillStyle = `rgba(180, 220, 255, ${star.alpha})`;
+        ctx.fillStyle = `rgba(180,220,255,${star.alpha})`;
         ctx.beginPath();
         ctx.arc(star.x, star.y, star.r, 0, Math.PI * 2);
         ctx.fill();
       }
 
-      ctx.fillStyle = 'rgba(120, 170, 255, 0.06)';
+      ctx.fillStyle = 'rgba(120,170,255,0.06)';
       for (let i = 0; i < 6; i += 1) {
         ctx.fillRect(0, i * 180 + (performance.now() * 0.035) % 180, canvas.width, 1);
       }
 
-      ctx.fillStyle = 'rgba(66, 109, 180, 0.08)';
+      ctx.fillStyle = 'rgba(66,109,180,0.08)';
       ctx.beginPath();
       ctx.arc(canvas.width * 0.2, canvas.height * 0.18, 140, 0, Math.PI * 2);
       ctx.fill();
@@ -1055,6 +1040,38 @@
       requestAnimationFrame(loop);
     }
 
+    function handleJoyMove(clientX, clientY) {
+      const rect = joyBase.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+      const dx = clientX - centerX;
+      const dy = clientY - centerY;
+      const len = Math.hypot(dx, dy);
+
+      const maxDistance = joyBase.clientWidth * 0.35;
+      const clampedLen = Math.min(len, maxDistance);
+
+      const angle = Math.atan2(dy, dx);
+      const x = Math.cos(angle) * clampedLen;
+      const y = Math.sin(angle) * clampedLen;
+
+      joystick.active = true;
+      joystick.x = x / maxDistance;
+      joystick.y = y / maxDistance;
+
+      joyKnob.style.transform = `translate(${x}px, ${y}px)`;
+    }
+
+    function releaseJoy() {
+      resetJoystick();
+      joyKnob.style.transform = 'translate(0px, 0px)';
+    }
+
+    pcModeBtn.addEventListener('click', () => startGame('pc'));
+    phoneModeBtn.addEventListener('click', () => startGame('phone'));
+
+    restartBtn.addEventListener('click', () => startGame(controlMode));
+
     window.addEventListener('keydown', (event) => {
       const key = event.key.length === 1 ? event.key.toLowerCase() : event.key;
       keys[key] = true;
@@ -1068,9 +1085,11 @@
         if (state === 'playing') {
           state = 'menu';
           menuOverlay.classList.remove('hidden');
+          updatePhoneControlsVisibility();
         } else if (state === 'menu') {
           state = 'playing';
           menuOverlay.classList.add('hidden');
+          updatePhoneControlsVisibility();
         }
       }
     });
@@ -1085,81 +1104,85 @@
     });
 
     window.addEventListener('pointermove', (event) => {
-      pointer.x = event.clientX;
-      pointer.y = event.clientY;
-      pointer.active = true;
+      if (controlMode === 'phone' && joystick.active) {
+        handleJoyMove(event.clientX, event.clientY);
+      } else {
+        pointer.x = event.clientX;
+        pointer.y = event.clientY;
+        pointer.active = true;
+      }
     });
 
     window.addEventListener('pointerdown', (event) => {
-      pointer.x = event.clientX;
-      pointer.y = event.clientY;
-      pointer.active = true;
+      if (controlMode === 'phone') {
+        if (event.target === joyBase || joyBase.contains(event.target)) {
+          handleJoyMove(event.clientX, event.clientY);
+        } else {
+          setPointerFromScreen(event.clientX, event.clientY);
+        }
+      } else {
+        setPointerFromScreen(event.clientX, event.clientY);
+      }
 
       if (state === 'menu') {
-        startGame();
+        startGame(controlMode);
       }
     });
 
     window.addEventListener('pointerup', () => {
       pointer.active = false;
+      if (controlMode === 'phone') {
+        releaseJoy();
+      }
+    });
+
+    joyBase.addEventListener('pointerdown', (event) => {
+      if (controlMode !== 'phone') return;
+      event.preventDefault();
+      handleJoyMove(event.clientX, event.clientY);
+    });
+
+    joyBase.addEventListener('pointermove', (event) => {
+      if (controlMode !== 'phone' || !joystick.active) return;
+      event.preventDefault();
+      handleJoyMove(event.clientX, event.clientY);
+    });
+
+    joyBase.addEventListener('pointerup', () => {
+      if (controlMode === 'phone') releaseJoy();
+    });
+
+    joyBase.addEventListener('pointerleave', () => {
+      if (controlMode === 'phone') releaseJoy();
+    });
+
+    joyBase.addEventListener('pointercancel', () => {
+      if (controlMode === 'phone') releaseJoy();
     });
 
     fireButton.addEventListener('pointerdown', (event) => {
       event.preventDefault();
       fireHeld = true;
-      pointer.x = canvas.width * 0.8;
-      pointer.y = canvas.height * 0.2;
-      pointer.active = true;
-      keys[' '] = true;
-
       if (state === 'menu') {
-        startGame();
+        startGame(controlMode);
       }
     });
 
     fireButton.addEventListener('pointerup', (event) => {
       event.preventDefault();
       fireHeld = false;
-      pointer.active = false;
-      keys[' '] = false;
     });
 
     fireButton.addEventListener('pointerleave', () => {
       fireHeld = false;
-      pointer.active = false;
-      keys[' '] = false;
     });
 
     fireButton.addEventListener('pointercancel', () => {
       fireHeld = false;
-      pointer.active = false;
-      keys[' '] = false;
-    });
-
-    mobileButtons.forEach((button) => {
-      const dir = button.dataset.dir;
-      bindMobileButton(button, dir);
-    });
-
-    startBtn.addEventListener('click', startGame);
-    restartBtn.addEventListener('click', startGame);
-
-    pauseBtn.addEventListener('click', () => {
-      if (state === 'playing') {
-        state = 'menu';
-        menuOverlay.classList.remove('hidden');
-      } else if (state === 'menu') {
-        state = 'playing';
-        menuOverlay.classList.add('hidden');
-      }
-    });
-
-    window.addEventListener('resize', resize);
-    window.addEventListener('load', () => {
-      setMobileControlsVisible();
     });
 
     resize();
+    updatePhoneControlsVisibility();
     resetGame();
     requestAnimationFrame(loop);
   </script>
