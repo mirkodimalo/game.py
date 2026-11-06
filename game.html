@@ -59,6 +59,7 @@
       box-shadow: 0 18px 40px rgba(7, 16, 24, 0.45), inset 0 1px 0 rgba(255,255,255,0.06);
       padding: 12px 16px;
       backdrop-filter: blur(6px);
+      max-width: min(420px, calc(100vw - 36px));
     }
 
     .panel h1 {
@@ -84,6 +85,7 @@
       border-radius: 8px;
       padding: 5px 9px;
       min-width: 92px;
+      white-space: nowrap;
     }
 
     .center-overlay {
@@ -239,6 +241,10 @@
         <div class="stat">Lives: <span id="livesValue">5</span></div>
         <div class="stat">Wave: <span id="waveValue">1</span></div>
         <div class="stat">Weapon: <span id="weaponValue">Blaster</span></div>
+        <div class="stat">Shield: <span id="shieldValue">100</span></div>
+        <div class="stat">Combo: <span id="comboValue">x1</span></div>
+        <div class="stat">Power: <span id="powerValue">Normal</span></div>
+        <div class="stat">Status: <span id="statusValue">Ready</span></div>
       </div>
     </div>
 
@@ -249,6 +255,7 @@
           <p>Choose your control style.</p>
           <p>PC: mouse + keyboard</p>
           <p>Phone: dynamic thumbstick + fire button</p>
+          <p>Online: connect to the battle server automatically.</p>
         </div>
         <div class="controls">
           <button class="btn" id="pcModeBtn">PC</button>
@@ -286,6 +293,11 @@
     const livesValue = document.getElementById('livesValue');
     const waveValue = document.getElementById('waveValue');
     const weaponValue = document.getElementById('weaponValue');
+    const shieldValue = document.getElementById('shieldValue');
+    const comboValue = document.getElementById('comboValue');
+    const powerValue = document.getElementById('powerValue');
+    const statusValue = document.getElementById('statusValue');
+
     const menuOverlay = document.getElementById('menuOverlay');
     const gameOverOverlay = document.getElementById('gameOverOverlay');
     const finalScore = document.getElementById('finalScore');
@@ -319,6 +331,12 @@
     let weaponLevel = 1;
     let fireRate = 0.22;
     let fireHeld = false;
+    let combo = 1;
+    let shield = 100;
+    let onlineSocket = null;
+    let onlinePlayerId = null;
+    let remotePlayers = new Map();
+    let onlineSendTimer = 0;
 
     const weaponNames = ['Blaster', 'Plasma', 'Nova', 'Vortex', 'Apex'];
 
@@ -414,6 +432,8 @@
       stars = createStars();
       weaponLevel = 1;
       fireRate = 0.22;
+      combo = 1;
+      shield = 100;
       messageText = 'Wave 1';
       messageTimer = 2.2;
       resetPlayer();
@@ -441,6 +461,22 @@
       livesValue.textContent = player ? player.lives : 0;
       waveValue.textContent = wave;
       weaponValue.textContent = weaponNames[Math.min(weaponLevel - 1, weaponNames.length - 1)];
+      shieldValue.textContent = Math.max(0, Math.round(shield));
+      comboValue.textContent = `x${Math.max(1, combo)}`;
+      powerValue.textContent =
+        weaponLevel >= 5 ? 'Apex' :
+        weaponLevel >= 4 ? 'Vortex' :
+        weaponLevel >= 3 ? 'Nova' :
+        weaponLevel >= 2 ? 'Plasma' :
+        'Normal';
+
+      if (state === 'playing') {
+        statusValue.textContent = 'Combat';
+      } else if (state === 'gameover') {
+        statusValue.textContent = 'Down';
+      } else {
+        statusValue.textContent = 'Ready';
+      }
     }
 
     function createBurst(x, y, color, amount = 16, speedBoost = 0) {
@@ -558,6 +594,70 @@
       screenShake = Math.max(screenShake, 4);
     }
 
+    function connectOnline() {
+      if (onlineSocket) {
+        onlineSocket.close();
+      }
+
+      onlinePlayerId = null;
+      remotePlayers.clear();
+
+      const serverUrl = location.protocol === 'https:'
+        ? `wss://${location.hostname}:8080`
+        : `ws://${location.hostname}:8080`;
+
+      onlineSocket = new WebSocket(serverUrl);
+
+      onlineSocket.addEventListener('message', (event) => {
+        try {
+          const message = JSON.parse(event.data);
+
+          if (message.type === 'welcome') {
+            onlinePlayerId = message.id;
+            return;
+          }
+
+          if (message.type === 'players' && Array.isArray(message.players)) {
+            remotePlayers.clear();
+
+            for (const other of message.players) {
+              if (other.id !== onlinePlayerId) {
+                remotePlayers.set(other.id, other);
+              }
+            }
+          }
+        } catch (err) {
+          console.error('WebSocket parse error', err);
+        }
+      });
+
+      onlineSocket.addEventListener('close', () => {
+        remotePlayers.clear();
+      });
+    }
+
+    function sendOnlinePosition(dt) {
+      onlineSendTimer -= dt;
+
+      if (
+        onlineSendTimer > 0 ||
+        !player ||
+        !onlineSocket ||
+        onlineSocket.readyState !== WebSocket.OPEN
+      ) {
+        return;
+      }
+
+      onlineSendTimer = 0.05;
+
+      onlineSocket.send(JSON.stringify({
+        type: 'move',
+        x: player.x / canvas.width,
+        y: player.y / canvas.height,
+        angle: getAimAngle()
+      }));
+    }
+
     function startGame(mode) {
       controlMode = mode;
       resetGame();
@@ -566,6 +666,7 @@
       gameOverOverlay.classList.add('hidden');
       updatePhoneControlsVisibility();
       resetJoystick();
+      connectOnline();
     }
 
     function gameOver() {
@@ -579,6 +680,7 @@
       enemy.health -= damage;
       if (enemy.health <= 0) {
         score += enemy.radius > 45 ? 200 : enemy.radius > 20 ? 90 : 45;
+        combo = Math.min(combo + 1, 20);
         createBurst(enemy.x, enemy.y, enemy.color, enemy.radius > 45 ? 34 : enemy.radius > 20 ? 22 : 14, 30);
         if (Math.random() < 0.18) spawnPickup(enemy.x, enemy.y);
         enemies = enemies.filter((item) => item !== enemy);
@@ -655,6 +757,8 @@
         shootBullet();
         player.fireCooldown = fireRate;
       }
+
+      sendOnlinePosition(dt);
     }
 
     function updateBullets(dt) {
@@ -685,8 +789,12 @@
         const dx = bullet.x - player.x;
         const dy = bullet.y - player.y;
         if (Math.hypot(dx, dy) < bullet.radius + player.radius) {
-          player.lives -= 1;
-          player.invuln = 1.2;
+          if (player.invuln <= 0) {
+            player.lives -= 1;
+            player.invuln = 1.2;
+            combo = 1;
+            shield = Math.max(0, shield - 12);
+          }
           createBurst(bullet.x, bullet.y, '#ff4d6d', 18, 30);
           bullets.splice(i, 1);
           screenShake = Math.max(screenShake, 6);
@@ -783,6 +891,8 @@
           if (player.invuln <= 0) {
             player.lives -= 1;
             player.invuln = 1.2;
+            combo = 1;
+            shield = Math.max(0, shield - 18);
           }
           createBurst(enemy.x, enemy.y, '#ff4d6d', 24, 35);
           enemies.splice(i, 1);
@@ -804,6 +914,7 @@
         if (dist < item.radius + player.radius + 2) {
           if (item.kind === 'heal') {
             player.lives = Math.min(8, player.lives + 1);
+            shield = Math.min(100, shield + 20);
             messageText = '+1 life';
           } else {
             weaponLevel = Math.min(5, weaponLevel + 1);
@@ -994,6 +1105,37 @@
       ctx.globalAlpha = 1;
     }
 
+    function drawOnlinePlayers() {
+      for (const other of remotePlayers.values()) {
+        const x = other.x * canvas.width;
+        const y = other.y * canvas.height;
+
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.rotate((other.angle || -Math.PI / 2) + Math.PI / 2);
+
+        ctx.fillStyle = '#ffd166';
+        ctx.shadowColor = '#ffd166';
+        ctx.shadowBlur = 18;
+        ctx.beginPath();
+        ctx.moveTo(0, -28);
+        ctx.lineTo(19, 19);
+        ctx.lineTo(0, 10);
+        ctx.lineTo(-19, 19);
+        ctx.closePath();
+        ctx.fill();
+
+        ctx.restore();
+
+        ctx.save();
+        ctx.fillStyle = '#fff2c2';
+        ctx.font = '12px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText('ONLINE', x, y + 38);
+        ctx.restore();
+      }
+    }
+
     function drawMessage() {
       if (!messageTimer || messageTimer <= 0) return;
       ctx.save();
@@ -1015,6 +1157,7 @@
       drawBullets();
       drawEnemies();
       drawPlayer();
+      drawOnlinePlayers();
       drawMessage();
       ctx.restore();
     }
@@ -1120,6 +1263,10 @@
     restartBtn.addEventListener('click', () => startGame(controlMode));
 
     window.addEventListener('resize', resize);
+    window.addEventListener('beforeunload', () => {
+      if (onlineSocket) onlineSocket.close();
+    });
+
     resize();
     updatePhoneControlsVisibility();
     requestAnimationFrame(loop);
