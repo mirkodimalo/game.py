@@ -552,7 +552,31 @@
         fire: $('fireButton'),
         status: $('statusBar')
       };
+function damagePlayer() {
+  if (player.invuln > 0 || state !== 'playing') return;
 
+  const shieldDamage = Math.min(shield, 18);
+  shield = Math.max(0, shield - 18);
+
+  // The shield absorbs the hit; lose a life only if it can't absorb all of it.
+  if (shieldDamage < 18) {
+    player.lives -= 1;
+  }
+
+  player.invuln = 1.15;
+  combo = 1;
+  shake = 8;
+  burst(player.x, player.y, colors.red, 20, 180);
+  announce(shieldDamage < 18 ? 'Shield depleted · life lost' : 'Shield absorbed the hit');
+  refreshHud();
+
+  if (player.lives <= 0) {
+    state = 'over';
+    $('finalScore').textContent = Math.floor(score).toLocaleString();
+    ui.over.classList.remove('hidden');
+    ui.phone.classList.add('hidden');
+  }
+}
       const keys = new Set();
       const pointer = { x: 0, y: 0, down: false, seen: false };
       const joy = { id: null, x: 0, y: 0, cx: 0, cy: 0, max: 42 };
